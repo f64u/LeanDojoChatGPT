@@ -23,6 +23,13 @@ async def initialize_proof_search():
     global theorem
     global dojo
     global states
+    global repo
+    
+    global repo
+    repo = LeanGitRepo(data["repo_url"], data["repo_commit"])
+
+    if not is_available_in_cache(repo):
+        trace(repo)
 
     theorem = Theorem(repo, data["theorem_file_path"], data["theorem_name"])
 
@@ -55,7 +62,7 @@ async def run_tactic():
             "error": "The proof is abandoned because of `sorry`.",
             "proof_finished": False,
         }
-    elif type(s) in (TacticError, TimeoutError):
+    elif type(s) in (LeanError, TimeoutError):
         res = {
             "error": s.error,
             "proof_finished": False,
@@ -93,21 +100,15 @@ async def openapi_spec():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--url", type=str, default="https://github.com/yangky11/lean-example"
-    )
-    parser.add_argument(
-        "--commit", type=str, default="5a0360e49946815cb53132638ccdd46fb1859e2a"
-    )
+    # parser.add_argument(
+    #     "--url", type=str, default="https://github.com/yangky11/lean-example"
+    # )
+    # parser.add_argument(
+    #     "--commit", type=str, default="5a0360e49946815cb53132638ccdd46fb1859e2a"
+    # )
     parser.add_argument("--port", type=int, default=23333)
     args = parser.parse_args()
     logger.info(args)
-
-    global repo
-    repo = LeanGitRepo(args.url, args.commit)
-    assert is_available_in_cache(
-        repo
-    ), f"{repo} hasn't been traced yet. See https://leandojo.readthedocs.io/en/latest/getting-started.html."
 
     app.run(debug=True, host="localhost", port=args.port)
 

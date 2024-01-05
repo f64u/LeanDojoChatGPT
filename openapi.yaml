@@ -9,7 +9,7 @@ paths:
   /initialize_proof_search:
     post:
       operationId: initialize_proof_search
-      summary: Given the theorem name and file path of a Lean theorem in mathlib, initialize the proof search. The response includes the initial state and its state ID.
+      summary: Given the theorem name, file path, and a public git repo of a Lean theorem, initialize the proof search. The response includes the initial state and its state ID.
       requestBody:
         required: true
         content:
@@ -40,10 +40,16 @@ components:
       properties:
         theorem_name:
           type: string
-          description: The name of the target theorem to prove in mathlib.
+          description: The name of the target theorem to prove.
         theorem_file_path:
           type: string
-          description: The file path of the target theorem in mathlib.
+          description: The file path of the target theorem.
+        repo_url:
+          type: string
+          description: The git repository that houses a lean 3 or lean 4 codebase.
+        repo_commit: 
+          type: string
+          description: The specific git commit to check out.
     RunTacticRequest:
       type: object
       properties:
